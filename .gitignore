@@ -66,3 +66,6 @@ build/
 # Documentation artifacts (generated)
 /docs/generated/
 
+# Internal security notes
+app/QR_SCANNING_SECURITY_FIX.md
+
