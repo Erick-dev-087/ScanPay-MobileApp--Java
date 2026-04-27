@@ -1,0 +1,271 @@
+# ============================================================================
+# Payment Service Testing Guide
+# ============================================================================
+# This document explains how to test the payment initiation endpoint
+# directly from the mobile app without using curl or Python scripts.
+# ============================================================================
+
+## SUMMARY OF CHANGES MADE
+
+### 1. Updated PaymentRequest Class
+Location: `app/android-app/app/src/main/java/com/scanpay/app/data/request/PaymentRequest.java`
+
+**What Changed:**
+- Added new `qr_code_id` field (int) as primary identifier
+- Added new constructor: `PaymentRequest(int qrCodeId, double amount)`
+- Kept legacy constructors for backward compatibility
+- The class now properly serializes `qr_code_id` when making API calls
+
+**Why:**
+Backend expects `qr_code_id` (integer) and `amount` fields, but the app was sending `merchant_code` (string).
+The fix ensures correct data is sent to the backend endpoint: POST /api/payment/initiate
+
+### 2. Updated ScanQRRequest Class
+Location: `app/android-app/app/src/main/java/com/scanpay/app/data/request/ScanQRRequest.java`
+
+**What Changed:**
+- Changed field from `qr_data` to `payload` to match backend expectations
+- Updated getter/setter names accordingly
+
+**Why:**
+Backend API expects `payload` field when scanning QR codes, not `qr_data`.
+
+### 3. Updated ScanQRResponse Class
+Location: `app/android-app/app/src/main/java/com/scanpay/app/data/response/ScanQRResponse.java`
+
+**What Changed:**
+- Added `qr_code_id` field (int) to capture QR ID from scan response
+- Added getter and setter methods
+
+**Why:**
+When the app scans a QR code via `/api/qr/scan` endpoint, the backend returns the QR code ID
+which is then used for payment initiation.
+
+### 4. Updated PaymentConfirmationActivity
+Location: `app/android-app/app/src/main/java/com/scanpay/app/ui/payment/PaymentConfirmationActivity.java`
+
+**What Changed:**
+- Added `qr_code_id` as intent extra
+- Updated payment request to use new constructor with `qr_code_id`
+- Improved error handling to parse QR ID from merchant code if needed
+- Removed mock fallback behavior for testing clarity
+
+**Why:**
+Now properly passes QR code ID to backend instead of merchant code.
+The payment request uses: `new PaymentRequest(qrCodeId, amount)`
+This ensures compatibility with backend's expected request format.
+
+### 5. Updated Constants
+Location: `app/android-app/app/src/main/java/com/scanpay/app/utils/Constants.java`
+
+**What Changed:**
+- Added new constant: `EXTRA_QR_CODE_ID = "qr_code_id"`
+
+**Why:**
+Allows passing QR code ID between activities via intents.
+
+### 6. Created PaymentTestActivity
+Location: `app/android-app/app/src/main/java/com/scanpay/app/ui/payment/PaymentTestActivity.java`
+
+**What Is It:**
+A dedicated testing activity that allows you to test the payment initiation endpoint
+directly from the mobile app WITHOUT using curl or Python scripts.
+
+**Features:**
+- Input fields for QR Code ID and Amount
+- Direct API call to backend
+- Real-time response display
+- Detailed logging of success/error/network responses
+- User phone is automatically retrieved from session
+
+**How to Access:**
+This activity can be launched programmatically or via adb:
+```powershell
+adb shell am start -n com.scanpay.app/.ui.payment.PaymentTestActivity
+```
+
+### 7. Created Layout for PaymentTestActivity
+Location: `app/android-app/app/src/main/res/layout/activity_payment_test.xml`
+
+**What It Provides:**
+- Clean UI for inputting test parameters
+- Real-time response display with scrolling
+- Progress indicator during API call
+- Default values (QR ID: 1, Amount: 100)
+
+### 8. Updated AndroidManifest.xml
+- Registered PaymentTestActivity so it can be launched
+
+## TESTING PROCEDURE
+
+### Prerequisites:
+1. ✓ Backend is running (Flask server or Render deployment)
+2. ✓ App is installed and you're logged in as a customer
+3. ✓ QR codes exist in your backend database (should have ID 1+ from seeds)
+
+### Step 1: Build and Run the App
+```bash
+cd "C:\Users\Erick\AndroidStudioProjects\QRPaymentApplication\app\android-app"
+./gradlew installDebug
+```
+
+### Step 2: Launch PaymentTestActivity
+Option A - Via Android Studio:
+- Run the app normally
+- Once logged in, find the PaymentTestActivity in the UI or add a navigation link
+
+Option B - Via ADB:
+```powershell
+# After building and installing the app:
+adb shell am start -n com.scanpay.app/.ui.payment.PaymentTestActivity
+```
+
+### Step 3: Run Test
+1. Enter QR Code ID: `1` (first QR code from database)
+2. Enter Amount: `100` (in KES)
+3. Tap "Test Payment Initiation" button
+4. Observe the response in the scrollable text area
+
+### Step 4: Verify Success
+**Expected Success Response:**
+```
+✓ SUCCESS - Status Code: 201
+
+Response Body:
+Message: Payment initiated successfully
+Transaction ID: [some_id]
+Amount: 100
+Status: Pending
+Checkout Request ID: [some_id]
+```
+
+**Expected Error Response (if QR doesn't exist):**
+```
+✗ FAILED - Status Code: 400
+
+Response Body:
+{"message": "QR code not found", "error": "..."}
+```
+
+## KEY DIFFERENCES FROM PREVIOUS IMPLEMENTATION
+
+### Before:
+- App sent: `merchant_code` (string like "123456"), `phone`, `amount`
+- Backend expected: `qr_code_id` (integer), `amount`
+- Result: Backend couldn't find QR code → Connection timeout or error
+
+### After:
+- App sends: `qr_code_id` (integer from QR), `amount`
+- Backend receives exactly what it expects
+- Result: Successful payment initiation → Returns transaction with all details
+
+## HOW THE FLOW WORKS NOW
+
+1. **QR Scanning:**
+   - User scans QR → QRScannerActivity parses it
+   - Could call `/api/qr/scan` to get official QR ID (optional, for validation)
+   - Pass QR ID to PaymentConfirmationActivity
+
+2. **Payment Initiation:**
+   - User enters amount in PaymentConfirmationActivity
+   - App creates: `PaymentRequest(qrCodeId, amount)`
+   - Sends POST to `/api/payment/initiate`
+   - Backend validates QR, creates transaction, initiates M-Pesa push
+
+3. **Response Handling:**
+   - Backend returns: `message`, `transaction`, `checkout_request_id`
+   - App updates TransactionResponse model
+   - Navigates to PaymentSuccessActivity on success
+
+## TESTING WITH RENDER DEPLOYMENT
+
+If your backend is on Render:
+1. Update BASE_URL in Constants.java to your Render URL (already done: https://qr-pay-system.onrender.com/api/)
+2. Rebuild app
+3. Test via PaymentTestActivity
+4. Confirm calls go through to Render backend
+
+## TESTING WITH LOCAL BACKEND
+
+If testing with local Flask:
+1. Ensure backend is running: `flask run`
+2. For emulator: Use 10.0.2.2:5000
+3. For phone on same network: Use PC's LAN IP
+4. Update BASE_URL in Constants.java if needed
+5. Test via PaymentTestActivity
+
+## DATABASE REQUIREMENTS FOR TESTING
+
+The backend database should have:
+- At least 1 QR code record (ID: 1)
+- At least 1 vendor/merchant associated with the QR
+- Your logged-in user ID in the session
+
+If tests fail with "QR not found", create a QR code first via backend:
+```python
+# Quick backend test
+from app import db
+from models import QRCode, Vendor
+
+vendor = Vendor.query.filter_by(user_id=1).first()
+if vendor:
+    qr = QRCode(vendor_id=vendor.id, qr_type='STATIC', is_active=True)
+    db.session.add(qr)
+    db.session.commit()
+    print(f"Created QR with ID: {qr.id}")
+```
+
+## TROUBLESHOOTING
+
+### Issue: "Invalid QR Code ID" toast message
+**Solution:**
+- Make sure merchant_code can be parsed as integer
+- Or pass qr_code_id directly through intent
+
+### Issue: Network error in response
+**Solution:**
+- Check backend URL in Constants.java
+- Verify backend is running
+- Check firewall settings
+- For emulator, use 10.0.2.2:5000
+
+### Issue: 400 Bad Request response
+**Solution:**
+- Verify QR ID exists in database: `SELECT * FROM qr_codes WHERE id = 1;`
+- Verify amount > 0 and <= 500000
+- Check backend logs for detailed error
+
+### Issue: 401 Unauthorized
+**Solution:**
+- Login again to refresh JWT token
+- Token may have expired
+- Check SessionManager is storing token correctly
+
+## NEXT STEPS
+
+1. ✓ Verify PaymentTestActivity works
+2. ✓ Confirm backend receives correct payload
+3. ✓ Integrate PaymentTestActivity into main navigation (optional)
+4. ✓ Update QRScannerActivity to extract and pass QR ID
+5. ✓ Test full flow: Scan QR → Payment Confirmation → Initiate Payment → Success
+
+## FILES MODIFIED
+
+1. `PaymentRequest.java` - Added qr_code_id field
+2. `ScanQRResponse.java` - Added qr_code_id field
+3. `ScanQRRequest.java` - Changed to use 'payload' field
+4. `PaymentConfirmationActivity.java` - Updated to use new PaymentRequest
+5. `Constants.java` - Added EXTRA_QR_CODE_ID
+6. `PaymentTestActivity.java` - NEW: Test activity
+7. `activity_payment_test.xml` - NEW: Test layout
+8. `AndroidManifest.xml` - Registered PaymentTestActivity
+
+## SUMMARY
+
+The payment service now properly calls the backend with the correct format:
+- Endpoint: `POST /api/payment/initiate`
+- Payload: `{ "qr_code_id": 1, "amount": 100 }`
+- Authentication: JWT token (auto-added by AuthInterceptor)
+
+You can test this directly from the mobile app using PaymentTestActivity without any curl commands or Python scripts.
+

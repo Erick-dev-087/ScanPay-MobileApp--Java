@@ -1,0 +1,143 @@
+Initial commit: Scan Pay - QR Payment System Android Application
+
+## Overview
+Native Android mobile application revolutionizing payment processing by bridging
+EMVCo-standard QR codes with M-Pesa/Daraja mobile money infrastructure. Enables
+customers and merchants to scan QR codes for instant, secure payments without
+manual Till/Paybill number entry.
+
+## Problem Solved
+- Eliminates tedious manual entry of merchant Till/Paybill numbers
+- Provides instant payment verification and receipt management
+- Enables real-time transaction tracking and merchant analytics
+- Bridges modern QR technology with existing M-Pesa infrastructure
+
+## Architecture & Design Patterns
+- MVVM (Model-View-ViewModel) architecture for separation of concerns
+- Repository pattern for abstracted data access layer
+- Dependency injection for testability and modularity
+- JWT-based stateless authentication with role-based access control (Customer/Vendor)
+- SessionManager for centralized auth state and role management
+
+## Authentication & Security
+- JWT token-based authentication with secure storage
+- Role-based access control distinguishing customers and merchants
+- Session persistence with automatic token management
+- AuthInterceptor for transparent JWT header injection
+- Role normalization handling backend alias differences (user→customer, vendor→merchant)
+- Secure password hashing and validation on registration
+- Password reset flow with token-based verification
+
+## Core Features - Customers
+- Quick QR code scanning with real-time camera integration
+- Secure payment initiation with amount entry (static QR codes)
+- M-Pesa STK push integration for frictionless checkout
+- Transaction history with receipt management
+- Multi-role support (register/login as both customer and merchant)
+- Dashboard with payment status polling and confirmation
+
+## Core Features - Merchants
+- EMVCo-compliant QR code generation (static and dynamic types)
+- Merchant dashboard with real-time transaction analytics
+- Store/business profile management
+- Transaction categorization and scan logging
+- Business metrics and payment analytics
+- External merchant discovery and onboarding flows
+
+## Payment Processing
+- M-Pesa/Daraja API STK push integration
+- Asynchronous payment callback handling via polling
+- Comprehensive transaction status tracking (Pending, Success, Failed, Expired)
+- Idempotent callback processing to prevent duplicate charges
+- Payment session management with configurable timeout
+- Support for multiple transaction types (BUY_GOODS, BILL_PAYMENT)
+- Mock M-Pesa service for development/testing without real payments
+
+## Networking & API Integration
+- Retrofit 2 with OkHttp3 for RESTful API communication
+- Automatic JWT authentication header injection
+- Endpoint definitions for:
+  * Authentication (register, login, forgot-password, reset-password)
+  * QR operations (generate, scan, validate)
+  * Payment initiation and status checking
+  * Callback handling and analytics
+- Request/response serialization with Gson
+- Custom interceptors for auth and error handling
+
+## Database & Persistence
+- Room ORM for local SQLite caching
+- Entity models: User, Vendor, QRCode, Transaction, PaymentSession
+- Repository layer for clean data access
+- Automatic schema versioning and migrations
+
+## UI/UX Components
+- Activity-based screens with proper lifecycle management
+- LoginActivity: Unified authentication for both user types
+- RegisterActivity: Dual-role registration flow
+- ForgotPasswordActivity: Token-based password recovery
+- ResetPasswordActivity: Secure password reset workflow
+- DashboardActivity: Role-based view switching (Customer/Vendor dashboard)
+- QRScannerActivity: Real-time camera-based QR scanning
+- PaymentFlowActivity: Transaction initiation and status tracking
+- TransactionHistoryFragment: Payment history with receipts
+- RecyclerView-based transaction lists with filtering and sorting
+
+## Testing Infrastructure
+- Unit tests for API contracts (routes, payloads, status codes)
+- MockWebServer-based request/response validation tests
+- Authentication flow testing (login, role switching, session persistence)
+- Payment callback simulation and verification tests
+- Endpoint path and payload correctness assertions
+- Transaction status polling verification
+
+## Development Tools
+- Gradle-based build system with reproducible builds
+- Gradle wrapper for CI/CD compatibility
+- Android Gradle Plugin with modular dependency management
+- Build configuration for Debug and Release variants
+- Proguard rules for code obfuscation in production
+
+## Configuration & Environment
+- Configurable backend API endpoints
+- Environment-based settings (development, staging, production)
+- JWT token expiration tuning
+- Payment timeout and retry configuration
+- M-Pesa callback URL configuration (canonical: /api/payment/stk_callback)
+
+## Code Quality & Standards
+- AndroidX and Material Design compliance
+- Proper exception handling and error reporting
+- Null-safety considerations throughout
+- Clear separation of concerns across packages
+- Meaningful variable and method naming conventions
+
+## Known Limitations & Future Work
+- Requires running backend instance (separate Flask repository)
+- Default M-Pesa configuration uses Daraja sandbox environment
+- Real device testing recommended for STK push verification
+- Future: Support for additional payment gateways (cards, other mobile money)
+- Future: Biometric authentication (fingerprint/face recognition)
+- Future: Offline QR code generation capability
+
+## Backend Dependencies
+- Backend repository contains Flask API, PostgreSQL database, and Daraja integration
+- Android app communicates exclusively via REST API (location-agnostic)
+- Payment callbacks routed through backend from M-Pesa/Daraja servers
+
+## Build & Deployment
+- Minimum SDK: 28 (Android 9.0)
+- Target SDK: 35 (Android 15)
+- Language Level: Java 11
+- Gradle: 8.x
+- Generates APK/AAB for Play Store distribution
+
+## Repository Status
+- Initial feature-complete implementation
+- Ready for production deployment with backend setup
+- Comprehensive documentation for deployment and testing
+- All sensitive files and test scripts properly gitignored
+
+---
+Type: Feature (Initial Release)
+Scope: Full Android mobile application for QR-based payment system
+Breaking Changes: None (initial commit)

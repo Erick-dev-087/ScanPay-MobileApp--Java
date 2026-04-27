@@ -1,0 +1,68 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Test scripts (development/debugging only)
+*.ps1
+*.bat
+test_*.py
+test_*.sh
+test_output.*
+test_registration.py
+*-test.*
+
+# Environment and credentials
+.env
+.env.local
+.env.*.local
+credentials.json
+secrets.json
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Gradle wrapper logs
+.gradle/
+gradle-app.setting
+
+# Build artifacts
+app/build/
+build/
+
+# Generated files
+*.class
+*.jar
+*.aar
+*.dex
+*.apk
+*.ap_
+
+# Logs
+*.log
+/logs/
+
+# Documentation artifacts (generated)
+/docs/generated/
+
