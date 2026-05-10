@@ -63,9 +63,9 @@
     <color name="inputBorderFocused">#00D9A5</color>
 
     <!-- Navigation Colors -->
-    <color name="navBackground">#0D1B3E</color>
-    <color name="navItemActive">#00D9A5</color>
-    <color name="navItemInactive">#78909C</color>
+    <color name="navBackground">#F9F9F8</color>
+    <color name="navItemActive">#006D38</color>
+    <color name="navItemInactive">#484847</color>
 
     <!-- Divider -->
     <color name="divider">#37474F</color>
@@ -89,5 +89,40 @@
 
     <!-- Ripple -->
     <color name="rippleColor">#2000D9A5</color>
+
+    <!-- Scan Screen (Light Mode Defaults) -->
+    <color name="scan_surface_lowest">#F9F9F8</color>
+    <color name="scan_surface_low">#F7F7F7</color>
+    <color name="scan_surface_highest">#E1E1E1</color>
+    <color name="scan_surface_variant">#F1F1F1</color>
+    <color name="scan_outline_variant">#C8C8C7</color>
+    <color name="scan_primary">#00FC40</color>
+    <color name="scan_primary_container">#9CFF93</color>
+    <color name="scan_secondary">#006D38</color>
+    <color name="scan_tertiary">#006874</color>
+    <color name="scan_on_surface">#1A1A1A</color>
+    <color name="scan_on_surface_variant">#484847</color>
+    <color name="scan_on_primary">#002104</color>
+    <color name="scan_mask">#99000000</color>
+    <color name="scan_primary_soft">#6600FC40</color>
+    <color name="scan_primary_glow">#3300FC40</color>
+    <color name="scan_glass">#B3FFFFFF</color>
+    <color name="scan_glass_border">#1A000000</color>
+
+    <!-- Dashboard UI (Light Mode) -->
+    <color name="ui_surface_lowest">#FFFFFF</color>
+    <color name="ui_surface">#F9F9F8</color>
+    <color name="ui_surface_low">#F7F7F7</color>
+    <color name="ui_surface_high">#E6E6E5</color>
+    <color name="ui_surface_highest">#E1E1E1</color>
+    <color name="ui_surface_variant">#F1F1F1</color>
+    <color name="ui_outline_variant">#C8C8C7</color>
+    <color name="ui_on_surface">#1A1A1A</color>
+    <color name="ui_on_surface_variant">#484847</color>
+    <color name="ui_primary">#00FC40</color>
+    <color name="ui_primary_container">#9CFF93</color>
+    <color name="ui_on_primary">#002104</color>
+    <color name="ui_secondary">#006D38</color>
+    <color name="ui_tertiary">#006874</color>
 </resources>
 

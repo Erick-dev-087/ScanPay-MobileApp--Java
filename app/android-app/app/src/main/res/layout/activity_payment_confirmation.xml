@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/backgroundColor"
-    android:padding="@dimen/padding_large">
+    android:background="@color/ui_surface_lowest"
+    android:padding="24dp">
 
     <!-- Header -->
     <LinearLayout
@@ -17,17 +17,18 @@
 
         <ImageView
             android:id="@+id/btn_back"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:src="@drawable/ic_back"
-            android:contentDescription="@string/cd_back_button"/>
+            app:tint="@color/ui_on_surface"
+            android:contentDescription="@string/cd_back_button" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_medium"
             android:text="@string/confirm_payment"
-            android:textColor="@color/textPrimary"
+            android:textColor="@color/ui_on_surface"
             android:textSize="20sp"
             android:fontFamily="sans-serif-medium"/>
 
@@ -38,9 +39,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_xlarge"
-        app:cardBackgroundColor="@color/cardBackground"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp">
+        app:cardBackgroundColor="@color/ui_surface_low"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,7 +55,7 @@
                 android:layout_height="64dp"
                 android:src="@drawable/ic_store"
                 android:padding="16dp"
-                android:background="@drawable/bg_transaction_icon"/>
+                android:background="@drawable/bg_dashboard_avatar"/>
 
             <TextView
                 android:id="@+id/tv_merchant_name"
@@ -62,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_medium"
                 android:text="SuperMart"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/ui_on_surface"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-medium"/>
 
@@ -72,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Till: 123456"
-                android:textColor="@color/textSecondary"
+                android:textColor="@color/ui_tertiary"
                 android:textSize="14sp"/>
 
         </LinearLayout>
@@ -85,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_xlarge"
         android:text="@string/amount"
-        android:textColor="@color/textPrimary"
+        android:textColor="@color/ui_on_surface"
         android:textSize="16sp"
         android:fontFamily="sans-serif-medium"/>
 
@@ -95,10 +96,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_small"
         style="@style/TextInputStyle"
-        app:boxBackgroundColor="@color/inputBackground"
-        app:hintTextColor="@color/textHint"
+        app:boxBackgroundColor="@color/ui_surface_variant"
+        app:hintTextColor="@color/ui_on_surface_variant"
         app:prefixText="Ksh"
-        app:prefixTextColor="@color/accentGreen">
+        app:prefixTextColor="@color/ui_primary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_amount"
@@ -106,7 +107,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_amount"
             android:inputType="numberDecimal"
-            android:textColor="@color/textPrimary"
+            android:textColor="@color/ui_on_surface"
             android:textSize="24sp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -116,7 +117,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_medium"
-        android:textColor="@color/textSecondary"
+        android:textColor="@color/ui_on_surface_variant"
         android:textSize="14sp"
         android:visibility="gone"/>
 
@@ -126,14 +127,16 @@
         android:layout_weight="1"/>
 
     <!-- Pay Button -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_pay_now"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@drawable/bg_button_primary"
+        android:background="@drawable/bg_dashboard_primary_button"
         android:text="@string/pay_now"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp"
+        android:textColor="@color/ui_on_primary"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:letterSpacing="0.08"
         android:fontFamily="sans-serif-medium"
         android:stateListAnimator="@null"/>
 
@@ -144,7 +147,8 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/margin_medium"
         android:visibility="gone"
-        android:indeterminateTint="@color/accentGreen"/>
+        android:indeterminateTint="@color/ui_primary"/>
 
 </LinearLayout>
+
 

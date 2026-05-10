@@ -69,3 +69,7 @@ build/
 # Internal security notes
 app/QR_SCANNING_SECURITY_FIX.md
 
+# Image assets (if not needed in version control)
+app/stitch_scan_qr_code
+
+

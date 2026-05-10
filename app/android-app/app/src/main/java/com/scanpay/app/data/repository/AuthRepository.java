@@ -52,9 +52,17 @@ public class AuthRepository {
                                    @NonNull Response<AuthResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     AuthResponse body = response.body();
-                    if (body.isSuccessful() && body.getUser() != null) {
-                        // Set user type from response if provided
+                    if (body.isSuccessful()) {
                         User user = body.getUser();
+                        if (user == null && body.getVendor() != null) {
+                            // Vendor login returns "vendor" payload; convert it for session storage.
+                            user = body.getVendor().toUser();
+                        }
+                        if (user == null) {
+                            result.setValue(Resource.error("Login response did not include user data."));
+                            return;
+                        }
+                        // Prefer explicit user_type from response, otherwise preserve converted value.
                         if (body.getUserType() != null && !body.getUserType().isEmpty()) {
                             user.setUserType(body.getUserType());
                         }

@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.scanpay.app.ui.base.BaseActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,13 +26,15 @@ import com.scanpay.app.utils.SessionManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
-    private TextView tvGreeting, tvTotalSpent;
+    private TextView tvGreeting, tvTotalSpent, tvViewAll;
     private Button btnScanPay;
     private RecyclerView rvRecentActivity;
     private BottomNavigationView bottomNavigation;
     private ImageView btnMenu;
+    private ImageView btnThemeToggle;
+    private ImageView btnNotifications;
     private View dashboardContent;
 
     private SessionManager sessionManager;
@@ -58,19 +60,16 @@ public class MainActivity extends AppCompatActivity {
         rvRecentActivity = findViewById(R.id.rv_recent_activity);
         bottomNavigation = findViewById(R.id.bottom_navigation);
         btnMenu = findViewById(R.id.btn_menu);
+        btnThemeToggle = findViewById(R.id.btn_theme_toggle);
+        btnNotifications = findViewById(R.id.btn_notifications);
+        tvViewAll = findViewById(R.id.tv_view_all);
     }
 
     private void setupUI() {
-        // Set greeting
-        String userName = sessionManager.getUserName();
-        if (userName != null && !userName.isEmpty()) {
-            tvGreeting.setText(getString(R.string.hi_greeting, userName));
-        } else {
-            tvGreeting.setText("Hi there");
-        }
+        tvGreeting.setText(getString(R.string.available_balance));
 
         // Setup RecyclerView
-        rvRecentActivity.setLayoutManager(new LinearLayoutManager(this));
+        rvRecentActivity.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         transactionAdapter = new TransactionAdapter(new ArrayList<>(), transaction -> {
             Toast.makeText(this, "Transaction: " + transaction.getMerchantName(), Toast.LENGTH_SHORT).show();
         });
@@ -81,10 +80,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, QRScannerActivity.class));
         });
 
-        // Menu button
-        btnMenu.setOnClickListener(v -> {
-            Toast.makeText(this, "Menu clicked", Toast.LENGTH_SHORT).show();
-        });
+        btnMenu.setOnClickListener(v ->
+            Toast.makeText(this, "Menu clicked", Toast.LENGTH_SHORT).show());
+
+        btnThemeToggle.setOnClickListener(v -> toggleThemePreference());
+
+        btnNotifications.setOnClickListener(v ->
+            Toast.makeText(this, "Notifications", Toast.LENGTH_SHORT).show());
+
     }
 
     private void setupBottomNavigation() {
@@ -123,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadMockData() {
         // Mock total spent
-        tvTotalSpent.setText("14,200");
+        tvTotalSpent.setText("KSH 14,245.80");
 
         // Mock transactions
         List<Transaction> transactions = new ArrayList<>();

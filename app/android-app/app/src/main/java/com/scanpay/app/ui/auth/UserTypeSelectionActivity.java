@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.scanpay.app.ui.base.BaseActivity;
 import androidx.cardview.widget.CardView;
 
 import com.scanpay.app.R;
 import com.scanpay.app.utils.Constants;
 
-public class UserTypeSelectionActivity extends AppCompatActivity {
+public class UserTypeSelectionActivity extends BaseActivity {
 
     private CardView cardCustomer, cardMerchant;
     private TextView tvLogin;

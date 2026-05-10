@@ -13,7 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.scanpay.app.ui.base.BaseActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -25,7 +25,7 @@ import com.scanpay.app.utils.Constants;
 
 import java.util.Map;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
 
     private ImageView btnBack;
     private TextView tvUserType, tvLogin, tvPaymentMethodLabel;

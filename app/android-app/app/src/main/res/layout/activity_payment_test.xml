@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="20dp"
+    android:background="@color/ui_surface_lowest">
 
     <TextView
         android:layout_width="match_parent"
@@ -12,6 +13,7 @@
         android:text="Payment Service Test"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:textColor="@color/ui_on_surface"
         android:layout_marginBottom="16dp" />
 
     <TextView
@@ -19,7 +21,7 @@
         android:layout_height="wrap_content"
         android:text="Test the payment initiation endpoint directly from the app"
         android:textSize="14sp"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="@color/ui_on_surface_variant"
         android:layout_marginBottom="16dp" />
 
     <!-- QR Code ID Input -->
@@ -27,7 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        app:boxBackgroundColor="@android:color/white">
+        app:boxBackgroundColor="@color/ui_surface_variant"
+        app:hintTextColor="@color/ui_on_surface_variant">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_qr_code_id"
@@ -35,7 +38,8 @@
             android:layout_height="wrap_content"
             android:hint="QR Code ID"
             android:inputType="number"
-            android:text="1" />
+            android:text="1"
+            android:textColor="@color/ui_on_surface" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Amount Input -->
@@ -43,7 +47,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        app:boxBackgroundColor="@android:color/white">
+        app:boxBackgroundColor="@color/ui_surface_variant"
+        app:hintTextColor="@color/ui_on_surface_variant">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_amount"
@@ -51,18 +56,21 @@
             android:layout_height="wrap_content"
             android:hint="Amount (KES)"
             android:inputType="numberDecimal"
-            android:text="100" />
+            android:text="100"
+            android:textColor="@color/ui_on_surface" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Test Button -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_initiate_payment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:text="Test Payment Initiation"
         android:layout_marginBottom="16dp"
-        android:padding="12dp"
-        app:cornerRadius="8dp" />
+        android:textAllCaps="true"
+        android:letterSpacing="0.08"
+        android:textColor="@color/ui_on_primary"
+        android:background="@drawable/bg_dashboard_primary_button"/>
 
     <!-- Progress Bar -->
     <ProgressBar
@@ -79,6 +87,7 @@
         android:layout_height="wrap_content"
         android:text="Response:"
         android:textStyle="bold"
+        android:textColor="@color/ui_on_surface"
         android:layout_marginBottom="8dp" />
 
     <ScrollView
@@ -93,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/ui_on_surface_variant"
             android:padding="8dp"
             android:background="@drawable/border_gray"
             android:fontFamily="monospace" />

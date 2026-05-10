@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.scanpay.app.ui.base.BaseActivity;
 
 import com.scanpay.app.ui.auth.LoginActivity;
 import com.scanpay.app.ui.main.MainActivity;
@@ -15,7 +15,7 @@ import com.scanpay.app.ui.merchant.MerchantMainActivity;
 import com.scanpay.app.utils.SessionManager;
 
 @SuppressLint("CustomSplashScreen")
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     private static final String TAG = "SplashActivity";
     private static final long SPLASH_DELAY = 2000; // 2 seconds

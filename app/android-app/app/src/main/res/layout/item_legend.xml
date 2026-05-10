@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="45%"
-        android:textColor="@color/textPrimary"
+        android:textColor="@color/ui_on_surface"
         android:textSize="14sp"/>
 
 </LinearLayout>

@@ -15,10 +15,13 @@ import com.scanpay.app.data.response.PaymentStatusResponse;
 import com.scanpay.app.data.response.AnalyticsResponse;
 import com.scanpay.app.data.response.GenerateQRResponse;
 import com.scanpay.app.data.response.MerchantResponse;
+import com.scanpay.app.data.response.QRImageResponse;
 import com.scanpay.app.data.response.QRScanResponse;
+import com.scanpay.app.data.response.AppConfigResponse;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -62,6 +65,12 @@ public interface ApiService {
     @Headers("No-Authentication: true")
     @POST("auth/reset-password")
     Call<MessageResponse> resetPassword(@Body ResetPasswordRequest request);
+
+    // ── Runtime Config ─────────────────────────────────────────────
+
+    @Headers("No-Authentication: true")
+    @GET("config")
+    Call<AppConfigResponse> getRuntimeConfig();
 
 
 
@@ -110,6 +119,12 @@ public interface ApiService {
 
     @POST("qr/generate")
     Call<GenerateQRResponse> generateQRCode(@Body com.scanpay.app.data.request.GenerateQRRequest request);
+
+    @GET("qr/image/{qr_id}")
+    Call<QRImageResponse> generateQRCodeImage(@Path("qr_id") int qrId);
+
+    @GET("qr/image/file/{file_name}")
+    Call<ResponseBody> getQRCodeImageFile(@Path("file_name") String fileName);
 
     @POST("qr/scan")
     Call<QRScanResponse> scanQRCode(@Body com.scanpay.app.data.request.ScanQRRequest request);

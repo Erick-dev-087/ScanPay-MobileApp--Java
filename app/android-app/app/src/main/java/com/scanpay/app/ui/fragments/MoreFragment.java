@@ -15,6 +15,9 @@ import androidx.fragment.app.Fragment;
 import com.scanpay.app.R;
 import com.scanpay.app.data.repository.AuthRepository;
 import com.scanpay.app.ui.auth.LoginActivity;
+import com.scanpay.app.ui.more.HelpSupportActivity;
+import com.scanpay.app.ui.more.ProfileActivity;
+import com.scanpay.app.ui.more.SettingsActivity;
 import com.scanpay.app.utils.SessionManager;
 
 public class MoreFragment extends Fragment {
@@ -57,6 +60,15 @@ public class MoreFragment extends Fragment {
     }
 
     private void setupClickListeners() {
+        btnProfile.setOnClickListener(v ->
+            startActivity(new Intent(requireContext(), ProfileActivity.class)));
+
+        btnSettings.setOnClickListener(v ->
+            startActivity(new Intent(requireContext(), SettingsActivity.class)));
+
+        btnHelp.setOnClickListener(v ->
+            startActivity(new Intent(requireContext(), HelpSupportActivity.class)));
+
         btnLogout.setOnClickListener(v -> {
             AuthRepository authRepository = new AuthRepository(sessionManager);
             authRepository.logout();

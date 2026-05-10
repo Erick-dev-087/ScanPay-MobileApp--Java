@@ -2,6 +2,7 @@ package com.scanpay.app.data.response;
 
 import com.google.gson.annotations.SerializedName;
 import com.scanpay.app.data.model.User;
+import com.scanpay.app.data.model.Vendor;
 
 public class AuthResponse {
     @SerializedName("success")
@@ -19,6 +20,9 @@ public class AuthResponse {
     @SerializedName("user")
     private User user;
 
+    @SerializedName("vendor")
+    private Vendor vendor;
+
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
 
@@ -30,6 +34,9 @@ public class AuthResponse {
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+
+    public Vendor getVendor() { return vendor; }
+    public void setVendor(Vendor vendor) { this.vendor = vendor; }
 
     // Backward-compatible aliases used by legacy tests.
     public Boolean getSuccess() { return success; }
@@ -48,7 +55,7 @@ public class AuthResponse {
         if (success != null) {
             return success;
         }
-        return user != null && accessToken != null && !accessToken.isEmpty();
+        return (user != null || vendor != null) && accessToken != null && !accessToken.isEmpty();
     }
 }
 

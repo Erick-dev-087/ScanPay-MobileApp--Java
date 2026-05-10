@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.OnBackPressedCallback;
+
+import com.scanpay.app.ui.base.BaseActivity;
 
 import com.scanpay.app.R;
 import com.scanpay.app.ui.main.MainActivity;
@@ -17,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class PaymentSuccessActivity extends AppCompatActivity {
+public class PaymentSuccessActivity extends BaseActivity {
 
     private TextView tvMerchantName, tvAmount, tvTransactionId, tvDateTime;
     private Button btnDone;
@@ -32,6 +34,14 @@ public class PaymentSuccessActivity extends AppCompatActivity {
         initViews();
         displayPaymentDetails();
         setupClickListeners();
+
+        // Route system back to dashboard from this terminal screen.
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                goToDashboard();
+            }
+        });
     }
 
     private void initViews() {
@@ -67,11 +77,6 @@ public class PaymentSuccessActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         btnDone.setOnClickListener(v -> goToDashboard());
-    }
-
-    @Override
-    public void onBackPressed() {
-        goToDashboard();
     }
 
     private void goToDashboard() {

@@ -78,7 +78,7 @@
         <activity
             android:name=".ui.scanner.QRScannerActivity"
             android:exported="false"
-            android:theme="@style/Theme.ScanPay" />
+            android:theme="@style/Theme.ScanPay.Scanner" />
 
         <!-- Payment Confirmation Activity -->
         <activity
@@ -95,6 +95,22 @@
         <!-- Payment Test Activity -->
         <activity
             android:name=".ui.payment.PaymentTestActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ScanPay" />
+
+        <!-- Profile & Settings -->
+        <activity
+            android:name=".ui.more.ProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ScanPay" />
+
+        <activity
+            android:name=".ui.more.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ScanPay" />
+
+        <activity
+            android:name=".ui.more.HelpSupportActivity"
             android:exported="false"
             android:theme="@style/Theme.ScanPay" />
 

@@ -33,6 +33,20 @@
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
+    <!-- Scanner Theme (DayNight for toggling) -->
+    <style name="Theme.ScanPay.Scanner" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/scan_surface_lowest</item>
+        <item name="colorSurface">@color/scan_surface_low</item>
+        <item name="colorOnSurface">@color/scan_on_surface</item>
+        <item name="colorSurfaceVariant">@color/scan_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/scan_on_surface_variant</item>
+        <item name="colorPrimary">@color/scan_primary</item>
+        <item name="colorOnPrimary">@color/scan_on_primary</item>
+        <item name="colorPrimaryContainer">@color/scan_primary_container</item>
+        <item name="android:statusBarColor">@color/scan_surface_lowest</item>
+        <item name="android:navigationBarColor">@color/scan_surface_lowest</item>
+    </style>
+
     <!-- Base Text Style (required as implicit parent for dot-notation children) -->
     <style name="TextStyle">
         <item name="android:textColor">@color/textPrimary</item>

@@ -106,6 +106,16 @@
     <string name="validating_qr_code">Validating QR code...</string>
     <string name="invalid_qr_code">Invalid QR Code</string>
     <string name="camera_permission_required">Camera permission is required to scan QR codes</string>
+    <string name="scan_instruction">Align QR code within the frame to pay instantly</string>
+    <string name="scan_flashlight">Flashlight</string>
+    <string name="scan_upload">Upload</string>
+    <string name="scan_enter_code">Enter Code Manually</string>
+    <string name="scan_trust_copy">Trusted by 2M+ users for secure transactions</string>
+    <string name="scan_recent_scans">Recent Scans</string>
+    <string name="cd_toggle_theme">Toggle light mode</string>
+    <string name="cd_help">Help</string>
+    <string name="available_balance">Available Balance</string>
+    <string name="switch_account">Switch account</string>
 
     <!-- QR Code Generation -->
     <string name="generate_qr">Generate QR Code</string>
@@ -173,6 +183,11 @@
     <string name="security">Security</string>
     <string name="help_support">Help &amp; Support</string>
     <string name="about">About</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_subtitle">Manage notifications and security preferences.</string>
+    <string name="settings_notifications_coming_soon">Notification settings coming soon.</string>
+    <string name="settings_security_coming_soon">Security settings coming soon.</string>
+    <string name="settings_about_coming_soon">About page coming soon.</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="terms_of_service">Terms of Service</string>
     <string name="app_version">App Version</string>
@@ -181,6 +196,17 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="change_password">Change Password</string>
     <string name="profile_updated">Profile updated successfully</string>
+    <string name="profile_title">Profile</string>
+    <string name="profile_subtitle">Review your account details.</string>
+    <string name="edit_profile_coming_soon">Profile editing coming soon.</string>
+
+    <!-- Help &amp; Support -->
+    <string name="help_support_title">Help &amp; Support</string>
+    <string name="help_support_subtitle">Get assistance or learn more about Scan Pay.</string>
+    <string name="help_support_contact">Contact Support</string>
+    <string name="help_support_faq">FAQs</string>
+    <string name="help_support_contact_coming_soon">Support contact coming soon.</string>
+    <string name="help_support_faq_coming_soon">FAQs coming soon.</string>
 
     <!-- Time Periods -->
     <string name="monday">Mon</string>

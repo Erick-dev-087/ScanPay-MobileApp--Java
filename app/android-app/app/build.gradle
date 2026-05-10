@@ -2,14 +2,16 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'com.scanpay.app'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.scanpay.app"
         minSdk 28
-        targetSdk 35
+        targetSdk 36
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "long", "SESSION_IDLE_TIMEOUT_MS", "120000L"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -28,6 +30,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 }
 
@@ -40,12 +43,12 @@ dependencies {
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
 
     // Fragment
-    implementation 'androidx.fragment:fragment:1.6.2'
+    implementation 'androidx.fragment:fragment:1.5.7'
 
     // Lifecycle (Java variants)
-    implementation 'androidx.lifecycle:lifecycle-livedata:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.6.2'
 
     // Retrofit for API calls
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -54,6 +57,9 @@ dependencies {
 
     // Gson
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    // Encrypted preferences for session storage
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
 
     // ZXing for QR Code scanning
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'

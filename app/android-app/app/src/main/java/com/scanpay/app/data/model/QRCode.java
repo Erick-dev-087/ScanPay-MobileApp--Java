@@ -7,10 +7,10 @@ public class QRCode {
     @SerializedName("id")
     private int id;
 
-    @SerializedName("payload_data")
+    @SerializedName(value = "payload_data", alternate = {"payload"})
     private String payloadJson;
 
-    @SerializedName("qr_type")
+    @SerializedName(value = "qr_type", alternate = {"type"})
     private String qrType;
 
     @SerializedName("is_dynamic")

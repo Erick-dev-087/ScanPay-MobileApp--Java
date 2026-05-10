@@ -1,7 +1,9 @@
 package com.scanpay.app.ui.fragments;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,9 @@ import android.provider.MediaStore;
 import android.content.ContentValues;
 import android.os.Environment;
 import java.io.OutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -30,6 +35,8 @@ import com.scanpay.app.utils.SessionManager;
 import com.scanpay.app.api.ApiClient;
 import com.scanpay.app.data.request.GenerateQRRequest;
 import com.scanpay.app.data.response.GenerateQRResponse;
+import com.scanpay.app.data.response.QRImageResponse;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,6 +48,7 @@ public class QRCodesFragment extends Fragment {
     private Button btnShare, btnDownload;
 
     private SessionManager sessionManager;
+    private static final String TAG = "QRCodesFragment";
 
     @Nullable
     @Override
@@ -72,6 +80,8 @@ public class QRCodesFragment extends Fragment {
             tvTitle.setText("My QR Code");
             tvSubtitle.setText("Customers can scan to pay");
 
+            // Show cached preview immediately (if available), then refresh from backend.
+            loadCachedQrPreview();
             // Fetch QR from backend
             fetchMerchantQRCode();
         } else {
@@ -100,13 +110,43 @@ public class QRCodesFragment extends Fragment {
             @Override
             public void onResponse(Call<GenerateQRResponse> call, Response<GenerateQRResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getQrCode() != null && response.body().getQrCode().getPayload() != null) {
-                        generateQRCode(response.body().getQrCode().getPayload());
+                    // Try multiple locations for payload in response to be resilient to backend changes
+                    String payload = null;
+                    try {
+                        if (response.body().getQrCode() != null && response.body().getQrCode().getPayload() != null) {
+                            payload = response.body().getQrCode().getPayload();
+                        }
+                    } catch (Exception ignored) {}
+
+                    // Fallback: if response object itself has a payload field
+                    if (payload == null) {
+                        try {
+                            // assuming GenerateQRResponse may expose getPayload()
+                            java.lang.reflect.Method m = response.body().getClass().getMethod("getPayload");
+                            Object val = m.invoke(response.body());
+                            if (val instanceof String) payload = (String) val;
+                        } catch (Exception ignored) {}
+                    }
+
+                    Integer qrId = null;
+                    try {
+                        if (response.body().getQrCode() != null) {
+                            qrId = response.body().getQrCode().getId();
+                        }
+                    } catch (Exception ignored) {}
+
+                    if (qrId != null && qrId > 0) {
+                        fetchMerchantQRCodeImage(qrId, payload);
+                    } else if (payload != null && !payload.isEmpty()) {
+                        Log.d(TAG, "Received QR payload: " + payload);
+                        generateQRCode(payload);
                     } else {
                         Toast.makeText(requireContext(), "Failed to extract QR payload", Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, "QR payload missing in response: " + response.code());
                     }
                 } else {
                     Toast.makeText(requireContext(), "Failed to generate QR: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Log.w(TAG, "generateQRCode API error: " + response.code() + " body=" + response.errorBody());
                 }
             }
 
@@ -117,6 +157,101 @@ public class QRCodesFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void fetchMerchantQRCodeImage(int qrId, @Nullable String payloadFallback) {
+        ApiClient.getApiService().generateQRCodeImage(qrId).enqueue(new Callback<QRImageResponse>() {
+            @Override
+            public void onResponse(Call<QRImageResponse> call, Response<QRImageResponse> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful() && response.body() != null && response.body().getFileName() != null) {
+                    fetchQRCodeImageFile(response.body().getFileName(), payloadFallback);
+                } else if (payloadFallback != null && !payloadFallback.isEmpty()) {
+                    generateQRCode(payloadFallback);
+                } else {
+                    Toast.makeText(requireContext(), "Failed to generate QR image", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QRImageResponse> call, Throwable t) {
+                if (!isAdded()) return;
+                if (payloadFallback != null && !payloadFallback.isEmpty()) {
+                    generateQRCode(payloadFallback);
+                } else {
+                    Toast.makeText(requireContext(), "Network error loading QR image", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void fetchQRCodeImageFile(String fileName, @Nullable String payloadFallback) {
+        ApiClient.getApiService().getQRCodeImageFile(fileName).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
+                        if (bitmap != null) {
+                            ivQrCode.setImageBitmap(bitmap);
+                            cacheBitmap(bitmap);
+                            return;
+                        }
+                    } catch (Exception ignored) {}
+                }
+
+                if (payloadFallback != null && !payloadFallback.isEmpty()) {
+                    generateQRCode(payloadFallback);
+                } else {
+                    Toast.makeText(requireContext(), "Failed to load QR image file", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                if (!isAdded()) return;
+                if (payloadFallback != null && !payloadFallback.isEmpty()) {
+                    generateQRCode(payloadFallback);
+                } else {
+                    Toast.makeText(requireContext(), "Network error loading QR image file", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void loadCachedQrPreview() {
+        File cachedFile = getCachedQrFile();
+        if (!cachedFile.exists()) return;
+
+        Bitmap cachedBitmap = BitmapFactory.decodeFile(cachedFile.getAbsolutePath());
+        if (cachedBitmap != null) {
+            ivQrCode.setImageBitmap(cachedBitmap);
+        }
+    }
+
+    private File getCachedQrFile() {
+        File cacheDir = new File(requireContext().getFilesDir(), "qr_cache");
+        if (!cacheDir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            cacheDir.mkdirs();
+        }
+        String fileName = "vendor_qr_" + sessionManager.getUserId() + ".png";
+        return new File(cacheDir, fileName);
+    }
+
+    private void cacheBitmap(Bitmap bitmap) {
+        try {
+            File file = getCachedQrFile();
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                fos.flush();
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to cache QR bitmap", e);
+        }
     }
 
     private void shareQRCode() {
@@ -178,6 +313,7 @@ public class QRCodesFragment extends Fragment {
                 }
             }
             ivQrCode.setImageBitmap(bmp);
+            cacheBitmap(bmp);
         } catch (WriterException e) {
             Toast.makeText(requireContext(), "Failed to generate QR", Toast.LENGTH_SHORT).show();
         }

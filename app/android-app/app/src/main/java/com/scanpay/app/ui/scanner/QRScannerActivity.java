@@ -4,16 +4,21 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import com.scanpay.app.ui.base.BaseActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.BarcodeCallback;
+import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.scanpay.app.R;
 import com.scanpay.app.api.ApiClient;
 import com.scanpay.app.api.ApiService;
@@ -26,20 +31,117 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class QRScannerActivity extends AppCompatActivity {
+public class QRScannerActivity extends BaseActivity {
 
     private static final int CAMERA_PERMISSION_REQUEST = 1001;
+    private static final int PICK_IMAGE_REQUEST = 2001;
     private ApiService apiService;
+    private DecoratedBarcodeView barcodeView;
+    private View scanFrame;
+    private View scanLine;
+    private View btnFlashlight;
+    private View btnUpload;
+    private View btnManualEntry;
+    private ImageButton btnThemeToggle;
+    private ImageButton btnHelp;
+    private ImageButton btnBack;
+    private TextView tvScanInstruction;
+
+    private boolean torchEnabled = false;
+    private boolean isHandlingResult = false;
+    private android.animation.ValueAnimator scanLineAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_qr_scanner);
         apiService = ApiClient.getApiService();
 
+        initViews();
+        setupClickListeners();
+        hideSystemViewfinder();
+
         if (checkCameraPermission()) {
-            startQRScanner();
+            startScanner();
         } else {
             requestCameraPermission();
+        }
+    }
+
+    private void initViews() {
+        barcodeView = findViewById(R.id.barcode_view);
+        scanFrame = findViewById(R.id.scan_frame);
+        scanLine = findViewById(R.id.scan_line);
+        btnFlashlight = findViewById(R.id.btn_flashlight);
+        btnUpload = findViewById(R.id.btn_upload);
+        btnManualEntry = findViewById(R.id.btn_manual_entry);
+        btnThemeToggle = findViewById(R.id.btn_theme_toggle);
+        btnHelp = findViewById(R.id.btn_help);
+        btnBack = findViewById(R.id.btn_back);
+        tvScanInstruction = findViewById(R.id.tv_scan_instruction);
+    }
+
+    private void setupClickListeners() {
+        btnBack.setOnClickListener(v -> onBackPressed());
+
+        btnThemeToggle.setOnClickListener(v -> toggleThemePreference());
+
+        btnHelp.setOnClickListener(v ->
+                Toast.makeText(this, R.string.help_support, Toast.LENGTH_SHORT).show());
+
+        btnFlashlight.setOnClickListener(v -> toggleFlashlight());
+
+        btnUpload.setOnClickListener(v -> openImagePicker());
+
+        btnManualEntry.setOnClickListener(v ->
+                Toast.makeText(this, R.string.scan_enter_code, Toast.LENGTH_SHORT).show());
+    }
+
+    private void toggleFlashlight() {
+        if (barcodeView == null) {
+            return;
+        }
+
+        try {
+            torchEnabled = !torchEnabled;
+            if (torchEnabled) {
+                barcodeView.setTorchOn();
+            } else {
+                barcodeView.setTorchOff();
+            }
+        } catch (Exception e) {
+            torchEnabled = false;
+            Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    private void hideSystemViewfinder() {
+        if (barcodeView == null) {
+            return;
+        }
+        int viewFinderId = getResources().getIdentifier(
+                "zxing_viewfinder_view",
+                "id",
+                "com.journeyapps.barcodescanner"
+        );
+        View viewFinder = viewFinderId != 0 ? barcodeView.findViewById(viewFinderId) : null;
+        if (viewFinder != null) {
+            viewFinder.setVisibility(View.GONE);
+        }
+        int statusViewId = getResources().getIdentifier(
+                "zxing_status_view",
+                "id",
+                "com.journeyapps.barcodescanner"
+        );
+        View statusView = statusViewId != 0 ? barcodeView.findViewById(statusViewId) : null;
+        if (statusView != null) {
+            statusView.setVisibility(View.GONE);
         }
     }
 
@@ -74,7 +176,7 @@ public class QRScannerActivity extends AppCompatActivity {
 
         if (requestCode == CAMERA_PERMISSION_REQUEST) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startQRScanner();
+                startScanner();
             } else {
                 Toast.makeText(this, R.string.camera_permission_required, Toast.LENGTH_LONG).show();
                 finish();
@@ -82,35 +184,54 @@ public class QRScannerActivity extends AppCompatActivity {
         }
     }
 
-    private void startQRScanner() {
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-        integrator.setPrompt(getString(R.string.point_camera_at_qr));
-        integrator.setCameraId(0);
-        integrator.setBeepEnabled(true);
-        integrator.setBarcodeImageEnabled(false);
-        integrator.setOrientationLocked(true);
-        integrator.initiateScan();
+    private void startScanner() {
+        if (barcodeView == null) {
+            return;
+        }
+
+        barcodeView.decodeContinuous(barcodeCallback);
+        barcodeView.resume();
+        startScanLineAnimation();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-
-        if (result != null) {
-            if (result.getContents() == null) {
-                // Scan cancelled
-                finish();
-            } else {
-                // QR code scanned successfully
-                processQRCode(result.getContents());
+        if (requestCode == PICK_IMAGE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, R.string.scan_upload, Toast.LENGTH_SHORT).show();
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (barcodeView != null && checkCameraPermission()) {
+            barcodeView.resume();
+            startScanLineAnimation();
         }
     }
 
+    @Override
+    protected void onPause() {
+        if (barcodeView != null) {
+            barcodeView.pause();
+        }
+        stopScanLineAnimation();
+        super.onPause();
+    }
+
     private void processQRCode(String qrContent) {
+        if (isHandlingResult) {
+            return;
+        }
+        isHandlingResult = true;
+        if (barcodeView != null) {
+            barcodeView.pause();
+        }
         // Show loading indicator while validating
         Toast.makeText(this, R.string.validating_qr_code, Toast.LENGTH_SHORT).show();
 
@@ -190,7 +311,7 @@ public class QRScannerActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Toast.makeText(QRScannerActivity.this, "Error processing QR: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            startQRScanner(); // Restart scanner
+            restartScanner();
         }
     }
 
@@ -199,8 +320,54 @@ public class QRScannerActivity extends AppCompatActivity {
      */
     private void showErrorAndRetry(String errorMessage) {
         Toast.makeText(QRScannerActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-        // Restart scanner to try again
-        startQRScanner();
+        restartScanner();
     }
+
+    private void restartScanner() {
+        isHandlingResult = false;
+        if (barcodeView != null) {
+            barcodeView.resume();
+        }
+        startScanLineAnimation();
+    }
+
+    private void startScanLineAnimation() {
+        if (scanFrame == null || scanLine == null) {
+            return;
+        }
+        stopScanLineAnimation();
+        scanFrame.post(() -> {
+            int frameHeight = scanFrame.getHeight();
+            if (frameHeight <= 0) {
+                return;
+            }
+            scanLineAnimator = android.animation.ValueAnimator.ofFloat(0f, frameHeight - scanLine.getHeight());
+            scanLineAnimator.setDuration(1800);
+            scanLineAnimator.setRepeatMode(android.animation.ValueAnimator.REVERSE);
+            scanLineAnimator.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            scanLineAnimator.addUpdateListener(animation -> {
+                float value = (float) animation.getAnimatedValue();
+                scanLine.setTranslationY(value);
+            });
+            scanLineAnimator.start();
+        });
+    }
+
+    private void stopScanLineAnimation() {
+        if (scanLineAnimator != null) {
+            scanLineAnimator.cancel();
+            scanLineAnimator = null;
+        }
+    }
+
+    private final BarcodeCallback barcodeCallback = new BarcodeCallback() {
+        @Override
+        public void barcodeResult(BarcodeResult result) {
+            if (result == null || result.getText() == null) {
+                return;
+            }
+            processQRCode(result.getText());
+        }
+    };
 }
 

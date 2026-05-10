@@ -9,7 +9,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.scanpay.app.ui.base.BaseActivity;
 
 import com.scanpay.app.R;
 import com.scanpay.app.api.ApiClient;
@@ -27,7 +27,7 @@ import retrofit2.Response;
  * Allows testing the payment initiation endpoint from the mobile app
  * without using curl or Python scripts.
  */
-public class PaymentTestActivity extends AppCompatActivity {
+public class PaymentTestActivity extends BaseActivity {
 
     private EditText etQRCodeId, etAmount;
     private Button btnInitiatePayment;

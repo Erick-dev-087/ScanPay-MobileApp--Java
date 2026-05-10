@@ -4,14 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
+    android:background="@color/ui_surface_lowest"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/padding_large">
+        android:padding="24dp">
 
         <!-- Back Button and Title -->
         <LinearLayout
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_medium"
                 android:text="@string/create_account"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/ui_on_surface"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-medium"/>
 
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
             android:text="Customer Registration"
-            android:textColor="@color/accentGreen"
+            android:textColor="@color/ui_primary"
             android:textSize="14sp"/>
 
         <!-- Registration Form Card -->
@@ -53,9 +53,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_large"
-            app:cardBackgroundColor="@color/cardBackground"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
+            app:cardBackgroundColor="@color/ui_surface_low"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -69,8 +69,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/TextInputStyle"
-                    app:boxBackgroundColor="@color/inputBackground"
-                    app:hintTextColor="@color/textHint">
+                    app:boxBackgroundColor="@color/ui_surface_variant"
+                    app:hintTextColor="@color/ui_on_surface_variant">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_name"
@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_name"
                         android:inputType="textPersonName"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -90,8 +90,8 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:visibility="gone"
                     style="@style/TextInputStyle"
-                    app:boxBackgroundColor="@color/inputBackground"
-                    app:hintTextColor="@color/textHint">
+                    app:boxBackgroundColor="@color/ui_surface_variant"
+                    app:hintTextColor="@color/ui_on_surface_variant">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_business_name"
@@ -99,7 +99,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_business_name"
                         android:inputType="text"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -111,8 +111,8 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:visibility="gone"
                     style="@style/TextInputStyle"
-                    app:boxBackgroundColor="@color/inputBackground"
-                    app:hintTextColor="@color/textHint">
+                    app:boxBackgroundColor="@color/ui_surface_variant"
+                    app:hintTextColor="@color/ui_on_surface_variant">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_short_code"
@@ -120,7 +120,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_business_short_code"
                         android:inputType="number"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -132,8 +132,8 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:visibility="gone"
                     style="@style/TextInputStyle"
-                    app:boxBackgroundColor="@color/inputBackground"
-                    app:hintTextColor="@color/textHint">
+                    app:boxBackgroundColor="@color/ui_surface_variant"
+                    app:hintTextColor="@color/ui_on_surface_variant">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_merchant_id"
@@ -141,7 +141,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_merchant_id"
                         android:inputType="text"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -153,8 +153,8 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:visibility="gone"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    app:boxBackgroundColor="@color/inputBackground"
-                    app:hintTextColor="@color/textHint">
+                    app:boxBackgroundColor="@color/ui_surface_variant"
+                    app:hintTextColor="@color/ui_on_surface_variant">
 
                     <AutoCompleteTextView
                         android:id="@+id/dropdown_mcc"
@@ -162,7 +162,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_mcc"
                         android:inputType="none"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -195,7 +195,7 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:visibility="gone"
                     android:text="@string/label_payment_method"
-                    android:textColor="@color/textPrimary"
+                    android:textColor="@color/ui_on_surface"
                     android:textSize="14sp"
                     android:fontFamily="sans-serif-medium"/>
 
@@ -213,7 +213,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/label_till"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                     <RadioButton
                         android:id="@+id/rb_paybill"
@@ -221,7 +221,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/label_paybill"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                 </RadioGroup>
 
@@ -233,8 +233,8 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:visibility="gone"
                     style="@style/TextInputStyle"
-                    app:boxBackgroundColor="@color/inputBackground"
-                    app:hintTextColor="@color/textHint">
+                    app:boxBackgroundColor="@color/ui_surface_variant"
+                    app:hintTextColor="@color/ui_on_surface_variant">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_business_number"
@@ -242,7 +242,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_business_number"
                         android:inputType="number"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -273,10 +273,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_medium"
                     style="@style/TextInputStyle"
-                    app:boxBackgroundColor="@color/inputBackground"
-                    app:hintTextColor="@color/textHint"
+                    app:boxBackgroundColor="@color/ui_surface_variant"
+                    app:hintTextColor="@color/ui_on_surface_variant"
                     app:prefixText="+254"
-                    app:prefixTextColor="@color/textSecondary">
+                    app:prefixTextColor="@color/ui_on_surface_variant">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_phone"
@@ -284,7 +284,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_phone"
                         android:inputType="phone"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -295,10 +295,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_medium"
                     style="@style/TextInputStyle"
-                    app:boxBackgroundColor="@color/inputBackground"
-                    app:hintTextColor="@color/textHint"
+                    app:boxBackgroundColor="@color/ui_surface_variant"
+                    app:hintTextColor="@color/ui_on_surface_variant"
                     app:passwordToggleEnabled="true"
-                    app:passwordToggleTint="@color/textHint">
+                    app:passwordToggleTint="@color/ui_on_surface_variant">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_password"
@@ -306,7 +306,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_password"
                         android:inputType="textPassword"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -317,10 +317,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_medium"
                     style="@style/TextInputStyle"
-                    app:boxBackgroundColor="@color/inputBackground"
-                    app:hintTextColor="@color/textHint"
+                    app:boxBackgroundColor="@color/ui_surface_variant"
+                    app:hintTextColor="@color/ui_on_surface_variant"
                     app:passwordToggleEnabled="true"
-                    app:passwordToggleTint="@color/textHint">
+                    app:passwordToggleTint="@color/ui_on_surface_variant">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_confirm_password"
@@ -328,7 +328,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_confirm_password"
                         android:inputType="textPassword"
-                        android:textColor="@color/textPrimary"/>
+                        android:textColor="@color/ui_on_surface"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -338,11 +338,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="@dimen/margin_large"
-                    android:background="@drawable/bg_button_primary"
+                    android:background="@drawable/bg_dashboard_primary_button"
                     android:text="@string/register"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="16sp"
+                    android:textColor="@color/ui_on_primary"
+                    android:textSize="14sp"
                     android:fontFamily="sans-serif-medium"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.08"
                     android:stateListAnimator="@null"/>
 
                 <!-- Loading Progress -->
@@ -353,7 +355,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:visibility="gone"
-                    android:indeterminateTint="@color/accentGreen"/>
+                    android:indeterminateTint="@color/ui_primary"/>
 
             </LinearLayout>
 
@@ -372,7 +374,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/already_have_account"
-                android:textColor="@color/textSecondary"
+                android:textColor="@color/ui_on_surface_variant"
                 android:textSize="14sp"/>
 
             <TextView
@@ -381,7 +383,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="@string/login"
-                android:textColor="@color/accentGreen"
+                android:textColor="@color/ui_primary"
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"/>
 

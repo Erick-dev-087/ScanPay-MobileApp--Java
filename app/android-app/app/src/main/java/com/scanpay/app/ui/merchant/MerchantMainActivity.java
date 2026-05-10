@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.scanpay.app.ui.base.BaseActivity;
 import androidx.core.content.ContextCompat;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -26,10 +26,9 @@ import com.scanpay.app.utils.SessionManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MerchantMainActivity extends AppCompatActivity {
+public class MerchantMainActivity extends BaseActivity {
 
-    private TextView tvTodayRevenue, tvWeekRevenue, tvMonthRevenue;
-    private TextView tvInflow, tvOutflow;
+    private TextView tvWeekRevenue;
     private LineChart lineChart;
     private BottomNavigationView bottomNavigation;
 
@@ -49,11 +48,7 @@ public class MerchantMainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        tvTodayRevenue = findViewById(R.id.tv_today_revenue);
         tvWeekRevenue = findViewById(R.id.tv_week_revenue);
-        tvMonthRevenue = findViewById(R.id.tv_month_revenue);
-        tvInflow = findViewById(R.id.tv_inflow);
-        tvOutflow = findViewById(R.id.tv_outflow);
         lineChart = findViewById(R.id.line_chart);
         bottomNavigation = findViewById(R.id.bottom_navigation);
     }
@@ -72,16 +67,16 @@ public class MerchantMainActivity extends AppCompatActivity {
         // X Axis
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTextColor(ContextCompat.getColor(this, R.color.textSecondary));
+        xAxis.setTextColor(ContextCompat.getColor(this, R.color.ui_on_surface_variant));
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[]{"Mon", "Tue", "Wed", "Thu", "Fri"}));
 
         // Left Y Axis
         YAxis leftAxis = lineChart.getAxisLeft();
-        leftAxis.setTextColor(ContextCompat.getColor(this, R.color.textSecondary));
+        leftAxis.setTextColor(ContextCompat.getColor(this, R.color.ui_on_surface_variant));
         leftAxis.setDrawGridLines(true);
-        leftAxis.setGridColor(ContextCompat.getColor(this, R.color.divider));
+        leftAxis.setGridColor(ContextCompat.getColor(this, R.color.ui_outline_variant));
 
         // Right Y Axis (disabled)
         lineChart.getAxisRight().setEnabled(false);
@@ -122,11 +117,7 @@ public class MerchantMainActivity extends AppCompatActivity {
 
     private void loadMockData() {
         // Revenue data
-        tvTodayRevenue.setText("12,500");
-        tvWeekRevenue.setText("85,300");
-        tvMonthRevenue.setText("280,750");
-        tvInflow.setText("62,300");
-        tvOutflow.setText("21,500");
+        tvWeekRevenue.setText("$14,289.50");
 
         // Chart data
         List<Entry> entries = new ArrayList<>();
@@ -137,14 +128,14 @@ public class MerchantMainActivity extends AppCompatActivity {
         entries.add(new Entry(4, 40));
 
         LineDataSet dataSet = new LineDataSet(entries, "Transactions");
-        dataSet.setColor(ContextCompat.getColor(this, R.color.accentGreen));
+        dataSet.setColor(ContextCompat.getColor(this, R.color.ui_primary));
         dataSet.setLineWidth(2f);
-        dataSet.setCircleColor(ContextCompat.getColor(this, R.color.accentGreen));
+        dataSet.setCircleColor(ContextCompat.getColor(this, R.color.ui_primary));
         dataSet.setCircleRadius(4f);
         dataSet.setDrawCircleHole(false);
         dataSet.setValueTextColor(Color.TRANSPARENT);
         dataSet.setDrawFilled(true);
-        dataSet.setFillColor(ContextCompat.getColor(this, R.color.accentGreen));
+        dataSet.setFillColor(ContextCompat.getColor(this, R.color.ui_primary));
         dataSet.setFillAlpha(50);
         dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 

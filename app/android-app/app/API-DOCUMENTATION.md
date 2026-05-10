@@ -55,7 +55,7 @@ Authorization: Bearer <access_token>
 
 **Base Path:** `/api/auth`
 
-The authentication module handles registration, login, logout, forgot password, and reset password for both Users and Vendors. It uses JWT tokens with custom claims to differentiate user types.
+The authentication module handles registration, login, logout, refresh, forgot password, and reset password for both Users and Vendors. It uses short-lived access tokens plus rotating refresh tokens with server-side session tracking.
 
 ### 1.1 Register User
 
@@ -87,6 +87,7 @@ Creates a new consumer account.
 {
     "message": "User registered successfully",
     "access_token": "eyJhbGciOiJS...",
+    "refresh_token": "eyJhbGciOiJS...",
     "user": {
         "id": 1,
         "name": "John Doe",
@@ -145,6 +146,7 @@ Creates a new merchant account with business details.
 {
     "message": "Vendor registered successfully",
     "access_token": "eyJhbGciOiJS...",
+    "refresh_token": "eyJhbGciOiJS...",
     "vendor": {
         "id": 1,
         "name": "Jane Smith",
@@ -191,6 +193,7 @@ Authenticates both users and vendors via email.
 {
     "message": "Login successful",
     "access_token": "eyJhbGciOiJS...",
+    "refresh_token": "eyJhbGciOiJS...",
     "user_type": "user",
     "user": {
         "id": 1,
@@ -206,6 +209,7 @@ Authenticates both users and vendors via email.
 {
     "message": "Login successful",
     "access_token": "eyJhbGciOiJS...",
+    "refresh_token": "eyJhbGciOiJS...",
     "user_type": "vendor",
     "vendor": {
         "id": 1,
@@ -229,11 +233,17 @@ Authenticates both users and vendors via email.
 {
     "sub": "1",
     "user_type": "user|vendor",
+    "session_id": "02b3d0f9-6d84-4f2e-b5a4-1c9a0c4b8a6f",
     "phone": "254...",
     "email": "...",
     "business_shortcode": "..." // vendor only
 }
 ```
+
+**Token Behavior:**
+- Access tokens are short-lived and used on every API request.
+- Refresh tokens are long-lived, rotate on each refresh, and are tied to a server-side auth session.
+- Sessions are revoked on logout or after inactivity (`AUTH_SESSION_INACTIVITY_SECONDS`).
 
 **Error Responses:**
 - `400` - Missing fields
@@ -258,11 +268,38 @@ Logs out the current user/vendor.
 }
 ```
 
-**Note:** JWT token invalidation is client-side (delete token from storage). Server logs the logout event for security monitoring.
+**Note:** Logout revokes the server-side session. Any access/refresh token tied to that session is rejected.
 
 ---
 
-### 1.5 Forgot Password
+### 1.5 Refresh Token
+
+Issue a new access token (and rotate refresh token) using a valid refresh token.
+
+**Endpoint:** `POST /api/auth/refresh`
+
+**Authentication:** Required (Refresh JWT)
+
+**Success Response (200):**
+```json
+{
+    "message": "Token refreshed",
+    "access_token": "eyJhbGciOiJS...",
+    "refresh_token": "eyJhbGciOiJS...",
+    "user_type": "user"
+}
+```
+
+**Error Responses:**
+- `401` - Invalid/expired refresh token or session revoked
+
+**Notes:**
+- Refresh tokens rotate on every call; the previous refresh token becomes invalid.
+- If the session is idle longer than the configured inactivity window, refresh will fail and the user must log in again.
+
+---
+
+### 1.6 Forgot Password
 
 Generates a timed reset token and emails it to the account owner when the email exists.
 
@@ -291,7 +328,7 @@ Generates a timed reset token and emails it to the account owner when the email 
 
 ---
 
-### 1.6 Reset Password
+### 1.7 Reset Password
 
 Resets user or vendor password using a signed, time-limited token.
 
@@ -1035,7 +1072,7 @@ Initiates an M-Pesa STK Push payment to a vendor.
 
 Receives payment confirmation from M-Pesa/Daraja.
 
-**Endpoint:** `POST /api/payment/confirm`
+**Endpoint:** `POST /api/payment/stk_callback`
 
 **Authentication:** None (called by Safaricom servers)
 
@@ -1135,7 +1172,7 @@ Tests if the callback endpoint is publicly accessible.
 {
     "status": "ok",
     "message": "Callback endpoint is reachable",
-    "endpoint": "/api/payment/confirm"
+    "endpoint": "/api/payment/stk_callback"
 }
 ```
 
@@ -1656,6 +1693,7 @@ class JWTConfig:
     JWT_SECRET_KEY = "your-secret-key"
     JWT_ACCESS_TOKEN_EXPIRES = 3600        # 1 hour
     JWT_REFRESH_TOKEN_EXPIRES = 2592000    # 30 days
+    AUTH_SESSION_INACTIVITY_SECONDS = 900  # 15 minutes
     JWT_TOKEN_LOCATION = ["headers"]
     JWT_HEADER_NAME = "Authorization"
     JWT_HEADER_TYPE = "Bearer"
@@ -1670,7 +1708,7 @@ class DarajaAPIConfigs:
     DARAJA_BASE_URL = "https://sandbox.safaricom.co.ke"
     DARAJA_SHORTCODE = "..."
     DARAJA_PASSKEY = "..."
-    DARAJA_CALLBACK_URL = "https://yourdomain.com/confirm"
+    DARAJA_CALLBACK_URL = "https://yourdomain.com/api/payment/stk_callback"
 ```
 
 ### 10.4 Environment Variables (`.env`)
@@ -1685,13 +1723,16 @@ DEBUG=True
 
 # JWT
 JWT_SECRET_KEY=your-jwt-secret
+JWT_ACCESS_TOKEN_EXPIRES=3600
+JWT_REFRESH_TOKEN_EXPIRES=2592000
+AUTH_SESSION_INACTIVITY_SECONDS=900
 
 # Daraja
 DARAJA_CONSUMER_KEY=your-consumer-key
 DARAJA_CONSUMER_SECRET=your-consumer-secret
 DARAJA_SHORTCODE=123456
 DARAJA_PASSKEY=your-passkey
-DARAJA_CALLBACK_URL=https://your-public-url.com/api/payment/confirm
+DARAJA_CALLBACK_URL=https://your-public-url.com/api/payment/stk_callback
 ```
 
 ---
@@ -1705,6 +1746,7 @@ DARAJA_CALLBACK_URL=https://your-public-url.com/api/payment/confirm
 | POST | `/api/auth/register/vendor` | No | Register new vendor |
 | POST | `/api/auth/login` | No | Login (user/vendor) |
 | POST | `/api/auth/logout` | JWT | Logout |
+| POST | `/api/auth/refresh` | Refresh JWT | Refresh access token |
 | POST | `/api/auth/forgot-password` | No | Generate password reset token/email |
 | POST | `/api/auth/reset-password` | No | Reset password with token |
 | **User** |
@@ -1727,7 +1769,7 @@ DARAJA_CALLBACK_URL=https://your-public-url.com/api/payment/confirm
 | POST | `/api/qr/validate` | JWT | Validate QR code |
 | **Payment** |
 | POST | `/api/payment/initiate` | JWT | Start payment |
-| POST | `/api/payment/confirm` | No | Daraja callback |
+| POST | `/api/payment/stk_callback` | No | Daraja callback |
 | GET | `/api/payment/{id}/status` | JWT | Check status |
 | GET | `/api/payment/ping` | No | Health check |
 | **Admin** |

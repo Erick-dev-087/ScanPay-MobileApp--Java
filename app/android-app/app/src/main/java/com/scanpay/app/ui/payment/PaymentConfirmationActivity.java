@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.scanpay.app.ui.base.BaseActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PaymentConfirmationActivity extends AppCompatActivity {
+public class PaymentConfirmationActivity extends BaseActivity {
 
     private static final int MAX_STATUS_CHECK_ATTEMPTS = 24;
     private static final long STATUS_CHECK_INTERVAL_MS = 5000L;
