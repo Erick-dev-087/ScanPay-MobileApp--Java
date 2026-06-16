@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.scanpay.app.R;
 import com.scanpay.app.adapters.TransactionAdapter;
 import com.scanpay.app.data.model.Transaction;
@@ -21,6 +22,7 @@ import com.scanpay.app.ui.scanner.QRScannerActivity;
 import com.scanpay.app.ui.fragments.AnalyticsFragment;
 import com.scanpay.app.ui.fragments.QRCodesFragment;
 import com.scanpay.app.ui.fragments.MoreFragment;
+import com.scanpay.app.utils.CurrencyUtils;
 import com.scanpay.app.utils.SessionManager;
 
 import java.util.ArrayList;
@@ -28,7 +30,8 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity {
 
-    private TextView tvGreeting, tvTotalSpent, tvViewAll;
+    private TextView tvGreeting, tvTotalSpent;
+    private MaterialButton btnViewAll;
     private Button btnScanPay;
     private RecyclerView rvRecentActivity;
     private BottomNavigationView bottomNavigation;
@@ -36,6 +39,7 @@ public class MainActivity extends BaseActivity {
     private ImageView btnThemeToggle;
     private ImageView btnNotifications;
     private View dashboardContent;
+    private boolean isProgrammaticNav;
 
     private SessionManager sessionManager;
     private TransactionAdapter transactionAdapter;
@@ -62,7 +66,7 @@ public class MainActivity extends BaseActivity {
         btnMenu = findViewById(R.id.btn_menu);
         btnThemeToggle = findViewById(R.id.btn_theme_toggle);
         btnNotifications = findViewById(R.id.btn_notifications);
-        tvViewAll = findViewById(R.id.tv_view_all);
+        btnViewAll = findViewById(R.id.btn_view_all);
     }
 
     private void setupUI() {
@@ -88,10 +92,15 @@ public class MainActivity extends BaseActivity {
         btnNotifications.setOnClickListener(v ->
             Toast.makeText(this, "Notifications", Toast.LENGTH_SHORT).show());
 
+        btnViewAll.setOnClickListener(v -> navigateToAnalytics(true));
+
     }
 
     private void setupBottomNavigation() {
         bottomNavigation.setOnItemSelectedListener(item -> {
+            if (isProgrammaticNav) {
+                return true;
+            }
             int itemId = item.getItemId();
 
             if (itemId == R.id.navigation_dashboard) {
@@ -101,7 +110,7 @@ public class MainActivity extends BaseActivity {
                 showFragment(new QRCodesFragment());
                 return true;
             } else if (itemId == R.id.navigation_analytics) {
-                showFragment(new AnalyticsFragment());
+                showFragment(AnalyticsFragment.newInstance(false));
                 return true;
             } else if (itemId == R.id.navigation_more) {
                 showFragment(new MoreFragment());
@@ -109,6 +118,13 @@ public class MainActivity extends BaseActivity {
             }
             return false;
         });
+    }
+
+    private void navigateToAnalytics(boolean scrollToNodes) {
+        isProgrammaticNav = true;
+        bottomNavigation.setSelectedItemId(R.id.navigation_analytics);
+        isProgrammaticNav = false;
+        showFragment(AnalyticsFragment.newInstance(scrollToNodes));
     }
 
     private void showDashboard() {
@@ -126,7 +142,7 @@ public class MainActivity extends BaseActivity {
 
     private void loadMockData() {
         // Mock total spent
-        tvTotalSpent.setText("KSH 14,245.80");
+        tvTotalSpent.setText(CurrencyUtils.formatKshDecimal(14245.80));
 
         // Mock transactions
         List<Transaction> transactions = new ArrayList<>();

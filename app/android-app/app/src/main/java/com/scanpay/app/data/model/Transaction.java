@@ -1,6 +1,7 @@
 package com.scanpay.app.data.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.scanpay.app.utils.CurrencyUtils;
 
 /**
  * Transaction model representing a payment transaction
@@ -81,7 +82,7 @@ public class Transaction {
     public void setIconColor(int iconColor) { this.iconColor = iconColor; }
 
     public String getFormattedAmount() {
-        return String.format("%,.0f", amount);
+        return CurrencyUtils.formatKshDecimal(amount);
     }
 
     public boolean isCompleted() { return "completed".equalsIgnoreCase(status); }

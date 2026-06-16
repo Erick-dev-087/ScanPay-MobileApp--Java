@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/analytics_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#070A0A"
@@ -38,31 +39,51 @@
             android:orientation="horizontal"
             android:padding="4dp">
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_timeframe_daily"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:backgroundTint="#101516"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
                 android:gravity="center"
                 android:text="Daily"
+                android:textAllCaps="false"
                 android:textColor="#9AA7A1"
                 android:textSize="13sp" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_timeframe_weekly"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#1F2628"
+                android:backgroundTint="#1F2628"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
                 android:gravity="center"
                 android:text="Weekly"
+                android:textAllCaps="false"
                 android:textColor="#8FFF99"
                 android:textSize="13sp" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_timeframe_monthly"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:backgroundTint="#101516"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
                 android:gravity="center"
                 android:text="Monthly"
+                android:textAllCaps="false"
                 android:textColor="#9AA7A1"
                 android:textSize="13sp" />
         </LinearLayout>
@@ -90,6 +111,7 @@
                     android:fontFamily="sans-serif-medium" />
 
                 <TextView
+                    android:id="@+id/tv_timeframe_subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"

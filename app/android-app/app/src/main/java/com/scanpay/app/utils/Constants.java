@@ -45,6 +45,8 @@ public class Constants {
     public static final String EXTRA_AMOUNT = "amount";
     public static final String EXTRA_TRANSACTION_ID = "transaction_id";
     public static final String EXTRA_RESET_TOKEN = "reset_token";
+    public static final String EXTRA_SERVICE_TOKEN_BALANCE = "service_token_balance";
+    public static final String EXTRA_NAV_TARGET = "nav_target";
 
     // Request Codes
     public static final int REQUEST_QR_SCAN = 1001;
@@ -85,5 +87,5 @@ public class Constants {
 
     // Currency
     public static final String CURRENCY_CODE = "KES";
-    public static final String CURRENCY_SYMBOL = "Ksh";
+    public static final String CURRENCY_SYMBOL = "KSH";
 }

@@ -13,17 +13,17 @@ public class CurrencyUtils {
     private static final DecimalFormat KES_FORMAT_DECIMAL = new DecimalFormat("#,##0.00");
 
     /**
-     * Format amount as "Ksh 1,234" (no decimals).
+     * Format amount as "KSH 1,234" (no decimals).
      */
     public static String formatKsh(double amount) {
-        return "Ksh " + KES_FORMAT.format(amount);
+        return "KSH " + KES_FORMAT.format(amount);
     }
 
     /**
-     * Format amount as "Ksh 1,234.00" (with decimals).
+     * Format amount as "KSH 1,234.00" (with decimals).
      */
     public static String formatKshDecimal(double amount) {
-        return "Ksh " + KES_FORMAT_DECIMAL.format(amount);
+        return "KSH " + KES_FORMAT_DECIMAL.format(amount);
     }
 
     /**

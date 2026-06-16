@@ -19,8 +19,8 @@
     <string name="next">Next</string>
 
     <!-- Currency -->
-    <string name="currency_ksh">Ksh</string>
-    <string name="currency_format">Ksh %s</string>
+    <string name="currency_ksh">KSH</string>
+    <string name="currency_format">KSH %s</string>
 
     <!-- Authentication -->
     <string name="login">Login</string>
@@ -116,6 +116,30 @@
     <string name="cd_help">Help</string>
     <string name="available_balance">Available Balance</string>
     <string name="switch_account">Switch account</string>
+
+    <!-- Service Tokens / Top-up -->
+    <string name="app_name_scanpesa">ScanPesa</string>
+    <string name="service_tokens">Service tokens</string>
+    <string name="service_tokens_subtitle">API &amp; subscriptions</string>
+    <string name="top_up">Top up</string>
+    <string name="top_up_account">Top-up Account</string>
+    <string name="top_up_account_subtitle">Facilitate your ScanPesa services instantly.</string>
+    <string name="phone_number_label">Phone Number</string>
+    <string name="phone_number_hint">+254 …</string>
+    <string name="enter_amount_kes">Enter Amount (KES)</string>
+    <string name="preset_amount_500">KES 500</string>
+    <string name="preset_amount_1000">KES 1000</string>
+    <string name="preset_amount_2000">KES 2000</string>
+    <string name="preset_amount_5000">KES 5000</string>
+    <string name="top_up_security_notice">Transaction secured by 256-bit encryption. An STK push will be sent to your mobile device for authorization.</string>
+    <string name="initiate_payment">Initiate Payment</string>
+    <string name="top_up_initiating">Sending top-up request…</string>
+    <string name="top_up_initiation_failed">Could not initiate top-up. Please try again.</string>
+    <string name="top_up_success">Top-up completed successfully.</string>
+    <string name="balance_refreshed">Balance updated.</string>
+    <string name="balance_refresh_failed">Could not refresh balance.</string>
+    <string name="cd_refresh_balance">Refresh balance</string>
+    <string name="cd_toggle_balance_visibility">Toggle balance visibility</string>
 
     <!-- QR Code Generation -->
     <string name="generate_qr">Generate QR Code</string>

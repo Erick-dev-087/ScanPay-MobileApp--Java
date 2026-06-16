@@ -98,7 +98,7 @@
         style="@style/TextInputStyle"
         app:boxBackgroundColor="@color/ui_surface_variant"
         app:hintTextColor="@color/ui_on_surface_variant"
-        app:prefixText="Ksh"
+        app:prefixText="KSH"
         app:prefixTextColor="@color/ui_primary">
 
         <com.google.android.material.textfield.TextInputEditText

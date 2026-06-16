@@ -74,6 +74,12 @@
             android:exported="false"
             android:theme="@style/Theme.ScanPay" />
 
+        <!-- Merchant Top-up Activity -->
+        <activity
+            android:name=".ui.merchant.TopUpActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ScanPay" />
+
         <!-- QR Scanner Activity -->
         <activity
             android:name=".ui.scanner.QRScannerActivity"

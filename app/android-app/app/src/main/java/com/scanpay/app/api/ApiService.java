@@ -18,6 +18,8 @@ import com.scanpay.app.data.response.MerchantResponse;
 import com.scanpay.app.data.response.QRImageResponse;
 import com.scanpay.app.data.response.QRScanResponse;
 import com.scanpay.app.data.response.AppConfigResponse;
+import com.scanpay.app.data.response.TopUpBalanceResponse;
+import com.scanpay.app.data.response.TopUpResponse;
 
 import java.util.List;
 
@@ -136,4 +138,12 @@ public interface ApiService {
 
     @GET("payment/{transaction_id}/status")
     Call<PaymentStatusResponse> checkPaymentStatus(@Path("transaction_id") int transactionId);
+
+    // ── Top-up / Service Tokens ─────────────────────────────────────
+
+    @GET("topup/balance")
+    Call<TopUpBalanceResponse> getTopUpBalance();
+
+    @POST("topup/initiate")
+    Call<TopUpResponse> initiateTopUp(@Body com.scanpay.app.data.request.TopUpRequest request);
 }
